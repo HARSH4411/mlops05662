@@ -42,6 +42,15 @@ containerised API on Kubernetes with CI/CD.
 | `screenshots/` | Screenshots for the report |
 | `reports/MLOps_Assignment1_Report.docx` | Final written report |
 
+## Quick start on a fresh Linux VM (e.g. BITS Prayogshala)
+
+```bash
+cd ~/workspace && git clone https://github.com/HARSH4411/mlops05662.git && cd mlops05662
+bash scripts/run_all.sh
+```
+
+Runs every stage (data, EDA, training + MLflow, lint, tests, API, monitoring). Uses Docker if the VM has it, otherwise serves the same API with uvicorn.
+
 ## 1 · Setup (Windows PowerShell; Linux/macOS commands in brackets)
 
 ```powershell
