@@ -1,0 +1,9 @@
+# Minimal runtime deps for the serving container
+fastapi==0.148.0
+uvicorn==0.54.0
+pydantic==2.14.1
+scikit-learn==1.7.2
+pandas==2.3.3
+numpy==2.2.6
+joblib==1.6.0
+prometheus-client==0.26.0

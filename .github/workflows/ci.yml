@@ -1,0 +1,105 @@
+name: ci-cd
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.12"
+  PYTHONPATH: src:.
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}", cache: pip}
+      - run: pip install flake8==7.4.1
+      - name: flake8
+        run: flake8 --count --statistics
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}", cache: pip}
+      - run: pip install -r requirements.txt
+      - name: pytest
+        run: pytest -v --cov=heart --cov=api --cov-report=term --cov-report=xml --junitxml=test-results.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: |
+            test-results.xml
+            coverage.xml
+
+  train:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}", cache: pip}
+      - run: pip install -r requirements.txt
+      - name: Download + clean data
+        run: python scripts/download_data.py
+      - name: EDA figures
+        run: python scripts/eda.py
+      - name: Train + track with MLflow
+        run: python -m heart.train --experiment heart-disease-ci
+      - name: Quality gate (test ROC-AUC >= 0.80)
+        run: pytest -v tests/test_model.py::test_real_model_beats_baseline_if_present
+      - name: Summary
+        run: |
+          echo "## Best model" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          cat models/model.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: model
+          path: models/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-and-reports
+          path: |
+            mlflow.db
+            mlruns/
+            reports/
+
+  docker:
+    needs: train
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {name: model, path: models/}
+      - name: Build image
+        run: docker build -t heart-api:ci .
+      - name: Smoke test container
+        run: |
+          docker run -d --name api -p 8000:8000 heart-api:ci
+          for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 1; done
+          curl -sf localhost:8000/health
+          curl -sf -X POST localhost:8000/predict -H "Content-Type: application/json" \
+            -d @sample_request.json | tee prediction.json
+          grep -q '"confidence"' prediction.json
+          docker logs api
+      - name: Push to GHCR (main only)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          IMAGE=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker tag heart-api:ci $IMAGE:latest
+          docker tag heart-api:ci $IMAGE:${{ github.sha }}
+          docker push $IMAGE:latest
+          docker push $IMAGE:${{ github.sha }}

@@ -1,0 +1,44 @@
+{
+  "model_name": "logistic_regression",
+  "params": {
+    "clf__C": 0.5,
+    "clf__class_weight": "balanced",
+    "clf__penalty": "l2"
+  },
+  "metrics": {
+    "cv_accuracy_mean": 0.851,
+    "cv_precision_mean": 0.866,
+    "cv_recall_mean": 0.8099,
+    "cv_f1_mean": 0.8328,
+    "cv_roc_auc_mean": 0.9085,
+    "cv_accuracy_std": 0.0254,
+    "cv_precision_std": 0.072,
+    "cv_recall_std": 0.0616,
+    "cv_f1_std": 0.0265,
+    "cv_roc_auc_std": 0.0189,
+    "test_accuracy": 0.8689,
+    "test_precision": 0.8125,
+    "test_recall": 0.9286,
+    "test_f1": 0.8667,
+    "test_roc_auc": 0.9589,
+    "train_seconds": 3.3804
+  },
+  "features": [
+    "age",
+    "trestbps",
+    "chol",
+    "thalach",
+    "oldpeak",
+    "ca",
+    "sex",
+    "fbs",
+    "exang",
+    "cp",
+    "restecg",
+    "slope",
+    "thal"
+  ],
+  "sklearn_version": "1.7.2",
+  "trained_at": "2026-10-19T14:34:39.155989+00:00",
+  "mlflow_run_id": "bc64ff0aa36b44d69b1cee0b4c11d602"
+}

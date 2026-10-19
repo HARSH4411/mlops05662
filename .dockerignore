@@ -1,0 +1,17 @@
+.git
+.github
+**/__pycache__
+*.pyc
+.pytest_cache
+mlruns
+mlartifacts
+mlflow.db
+data
+reports
+screenshots
+tests
+k8s
+monitoring
+*.md
+.venv
+venv

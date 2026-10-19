@@ -1,0 +1,20 @@
+# Optional - requires an ingress controller, e.g.
+#   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.3/deploy/static/provider/cloud/deploy.yaml
+# then add "127.0.0.1 heart.local" to your hosts file and open http://heart.local/docs
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: heart-api
+  namespace: heart
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: heart.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: heart-api
+                port: {number: 8080}
