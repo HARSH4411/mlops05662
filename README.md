@@ -30,6 +30,7 @@ containerised API on Kubernetes with CI/CD.
 |---|---|
 | `scripts/download_data.py` | Downloads raw UCI file, cleans it, writes `data/processed/heart_clean.csv` |
 | `scripts/eda.py` | EDA figures → `reports/figures/` |
+| `notebooks/eda_training_inference.ipynb` | Interactive EDA, model comparison and inference walkthrough (executed) |
 | `src/heart/` | Package: `config`, `data` (clean), `features` (ColumnTransformer), `train` (CV + MLflow), `predict` |
 | `api/` | FastAPI app with request logging + Prometheus metrics |
 | `tests/` | Pytest unit tests for data, features, models and API |
@@ -39,11 +40,12 @@ containerised API on Kubernetes with CI/CD.
 | `monitoring/` | Prometheus scrape config, Grafana datasource + dashboard |
 | `models/` | Final model pipeline (`model.joblib`) + metadata (`model.json`) |
 | `screenshots/` | Screenshots for the report |
+| `reports/MLOps_Assignment1_Report.docx` | Final written report |
 
 ## 1 · Setup (Windows PowerShell; Linux/macOS commands in brackets)
 
 ```powershell
-git clone <this-repo-url>; cd heart-disease-mlops
+git clone https://github.com/HARSH4411/mlops05662.git; cd mlops05662
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1            # [source .venv/bin/activate]
 pip install -r requirements.txt
