@@ -15,7 +15,7 @@
     "test_recall": 0.9286,
     "test_f1": 0.8667,
     "test_roc_auc": 0.9589,
-    "train_seconds": 3.3804
+    "train_seconds": 1.7936
   },
   "random_forest": {
     "cv_accuracy_mean": 0.818,
@@ -33,7 +33,7 @@
     "test_recall": 0.9286,
     "test_f1": 0.8814,
     "test_roc_auc": 0.9524,
-    "train_seconds": 6.1634
+    "train_seconds": 19.4432
   },
   "gradient_boosting": {
     "cv_accuracy_mean": 0.8222,
@@ -51,6 +51,6 @@
     "test_recall": 0.9286,
     "test_f1": 0.8966,
     "test_roc_auc": 0.96,
-    "train_seconds": 0.7903
+    "train_seconds": 3.042
   }
 }

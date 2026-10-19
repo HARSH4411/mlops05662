@@ -1,0 +1,25 @@
+digraph G {
+  rankdir=LR; fontname="Helvetica"; node [shape=box style="rounded,filled" fontname="Helvetica" fontsize=11 fillcolor="#eef3fb" color="#4a6fa5"];
+  edge [color="#555555" fontname="Helvetica" fontsize=9];
+  subgraph cluster_dev { label="Development"; style="rounded,dashed"; color="#999999";
+    uci [label="UCI repository\n(Cleveland data)" fillcolor="#fff4e0" color="#d08a1e"];
+    dl [label="download_data.py\nclean + binary target"];
+    eda [label="eda.py\nfigures"];
+    tr [label="heart.train\nGridSearchCV x 3 models\n5-fold stratified CV"];
+    ml [label="MLflow\nruns, metrics, plots,\nmodel registry" fillcolor="#e8f6ee" color="#2e8b57"];
+    art [label="models/model.joblib\n(preprocess + classifier)"];
+    uci -> dl -> eda; dl -> tr; tr -> ml [label="log"]; tr -> art;
+  }
+  subgraph cluster_ci { label="GitHub Actions"; style="rounded,dashed"; color="#999999";
+    ci [label="lint -> test -> train\n-> docker build + smoke test\n-> push GHCR" fillcolor="#f3eefb" color="#6a4fa5"];
+  }
+  subgraph cluster_prod { label="Serving (Docker / Kubernetes)"; style="rounded,dashed"; color="#999999";
+    api [label="FastAPI container\n/predict /health /metrics\nJSON request logs"];
+    k8s [label="K8s Deployment (2 replicas)\nLoadBalancer Service :8080\nIngress (optional)"];
+    prom [label="Prometheus" fillcolor="#fdecea" color="#c0392b"];
+    graf [label="Grafana dashboard" fillcolor="#fdecea" color="#c0392b"];
+    user [label="Client" shape=ellipse fillcolor="#ffffff"];
+    user -> k8s -> api; prom -> api [label="scrape"]; graf -> prom;
+  }
+  art -> ci [label="git push"]; ci -> api [label="image"];
+}
