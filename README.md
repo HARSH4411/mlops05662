@@ -1,6 +1,9 @@
 # Heart Disease Risk — End-to-End MLOps Pipeline
 
-BITS Pilani · MLOps (S1-26_AIMLZG523) · Assignment 1
+BITS Pilani · MLOps (S1-26_AIMLZG523) · Assignment 1 · R Harsh Sai Kumar (2025AE05662)
+
+**Pipeline video:** https://drive.google.com/file/d/1gQOQwV9dFOO2UPr-XfQWQJF8PV675Mvh/view?usp=sharing  
+**Report:** [reports/MLOps_Assignment1_Report.docx](reports/MLOps_Assignment1_Report.docx)
 
 A binary classifier that predicts the presence of heart disease from 13 clinical attributes
 (UCI Heart Disease, Cleveland subset), taken all the way from raw data to a monitored,
